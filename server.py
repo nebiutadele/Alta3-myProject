@@ -6,26 +6,21 @@
 import sqlite3 as sql
 
 # python3 -m pip install flask
-from flask import Flask
-from flask import render_template
-from flask import request
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-# return home.html 
+# landing page
 @app.route('/')
 def home():
     return render_template('home.html')
 
-# return student.html (a way to add a student to our sqliteDB)
-@app.route('/enternew')
+# return beer form
+@app.route('/enternewbeer')
 def new_student():
     return render_template('beerform.html')
 
-# if someone uses student.html it will generate a POST
-# this post will be sent to /addrec
-# where the information will be added to the sqliteDB
-@app.route('/addrec',methods = ['POST'])
+@app.route('/addrecr',methods = ['POST'])
 def addrec():
     try:
         nm = request.form['nm']                 # beer name
