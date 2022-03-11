@@ -26,6 +26,7 @@ def addrec():
         nm = request.form['nm']                 # beer name
         style = request.form['style']           # beer style
         brewery = request.form['brewery']       # brewery name
+        rating = request.form['rating']         # beer rating 
         
 
         # connect to sqliteDB
@@ -33,7 +34,7 @@ def addrec():
             cur = con.cursor()
 
             # place the info from our form into the sqliteDB
-            cur.execute("INSERT INTO beers (name,style,brewery) VALUES (?,?,?)",(nm,style,brewery) )
+            cur.execute("INSERT INTO beers (name,style,brewery,rating) VALUES (?,?,?,?)",(nm,style,brewery,rating) )
             # commit the transaction to our sqliteDB
             con.commit()
         # if we have made it this far, the record was successfully added to the DB
@@ -41,11 +42,11 @@ def addrec():
         
     except:
         con.rollback()  # this is the opposite of a commit()
-        msg = "There was an error in adding the beer"    # we were NOT successful
+        msg = "There was an error in adding the beer"    # not successful
 
     finally:
         con.close()     # successful or not, close the connection to sqliteDB
-        return render_template("result.html",msg = msg)    #
+        return render_template("result.html",msg = msg)
 
 # return all entries from our sqliteDB as HTML
 @app.route('/list')
@@ -54,10 +55,32 @@ def list_beers():
     con.row_factory = sql.Row
     
     cur = con.cursor()
-    cur.execute("SELECT * from beers")           # pull all information from the table "students"
+    cur.execute("SELECT * from beers")
     
     rows = cur.fetchall()
     return render_template("list.html",rows = rows) # return all of the sqliteDB info as HTML
+
+@app.route('/remove', methods = ['DELETE'])
+def remove():
+    try:  # HTTP DELETE arrives at /remove?name=<name in DB to remove>
+
+        name_to_remove = request.args.get("name") # peel off arguments and capture name to be removed
+
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+            # place the info from our form into the sqliteDB
+            cur.execute("DELETE FROM beers WHERE name=(?)",(name_to_remove,) )
+
+            # commit the transaction to our sqliteDB
+            con.commit()
+
+            # if we have made it this far, the record was successfully added to the DB
+            msg = "record successfully removed"
+
+    except:
+        msg = "error in removing the record"
+    finally:
+        return render_template("result.html",msg = msg) # return success
 
 if __name__ == '__main__':
     try:
@@ -65,7 +88,7 @@ if __name__ == '__main__':
         con = sql.connect('database.db')
         print("Opened database successfully")
         # ensure that the table students is ready to be written to
-        con.execute('CREATE TABLE IF NOT EXISTS beers (name TEXT, style TEXT, brewery TEXT)')
+        con.execute('CREATE TABLE IF NOT EXISTS beers (name TEXT, style TEXT, brewery TEXT, rating INT)')
         print("Table created successfully")
         con.close()
         # begin Flask Application 

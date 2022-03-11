@@ -6,6 +6,7 @@
             <td>Beer Name</td>
             <td>Beer Style</td>
             <td>Brewery Name</td>
+	    <td>My Rating</td>
          </thead>
          
          {% for row in rows %}
@@ -13,6 +14,7 @@
                <td>{{ row["name"] }}</td>
                <td>{{ row["style"] }}</td>
                <td>{{ row["brewery"] }}</td>
+	       <td>{{ row["rating"] }}</td>
             </tr>
          {% endfor %}
       </table>
