@@ -1,0 +1,18 @@
+<html>
+   <body>
+      <form action = "{{ url_for('addrec') }}" method = "POST">
+         <h3>Beer Information</h3>
+         Beer Name:<br>
+         <input type = "text" name = "nm" /><br>
+         
+         Beer Style:<br>
+         <textarea name = "style" ></textarea><br>
+         
+         Brewery:<br>
+         <input type = "text" name = "brewery" /><br>
+         
+         <input type = "submit" value = "submit" /><br>
+      </form>
+   </body>
+</html>
+
